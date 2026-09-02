@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+*.env
+
+# Datasets
+data/
+*.tar.gz
+
+# Checkpoints & Weights
+weights/
+*.pth
+*.pt
+*.onnx
+
+# Artifacts & Outputs
+artifacts/plots/*.png
+artifacts/plots/*.jpg
+
+# IDE & OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
