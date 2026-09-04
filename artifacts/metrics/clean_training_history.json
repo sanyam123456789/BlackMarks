@@ -1,0 +1,67 @@
+{
+  "config": {
+    "epochs": 5,
+    "lr": 0.1,
+    "batch_size": 128,
+    "seed": 42,
+    "optimizer": "SGD",
+    "momentum": 0.9,
+    "weight_decay": 0.0005,
+    "nesterov": true,
+    "scheduler": "CosineAnnealingLR",
+    "loss": "CrossEntropyLoss",
+    "architecture": "CompactCNN",
+    "dataset": "CIFAR-10",
+    "train_samples": 45000,
+    "val_samples": 5000,
+    "test_samples": 10000,
+    "selection_metric": "val_acc"
+  },
+  "best_epoch": 5,
+  "best_val_acc": 79.8,
+  "final_test_loss": 0.590499,
+  "final_test_acc": 80.12,
+  "best_checkpoint": "E:\\BlackMarks\\artifacts\\checkpoints\\clean_model.pt",
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 1.797056,
+      "train_acc": 31.0044,
+      "val_loss": 1.56058,
+      "val_acc": 43.6,
+      "lr": 0.09045085
+    },
+    {
+      "epoch": 2,
+      "train_loss": 1.268438,
+      "train_acc": 54.5711,
+      "val_loss": 1.070644,
+      "val_acc": 61.46,
+      "lr": 0.06545085
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.964454,
+      "train_acc": 66.5667,
+      "val_loss": 0.907794,
+      "val_acc": 67.58,
+      "lr": 0.03454915
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.754841,
+      "train_acc": 74.5644,
+      "val_loss": 0.683268,
+      "val_acc": 76.44,
+      "lr": 0.00954915
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.593667,
+      "train_acc": 80.1511,
+      "val_loss": 0.580987,
+      "val_acc": 79.8,
+      "lr": 0.0
+    }
+  ]
+}

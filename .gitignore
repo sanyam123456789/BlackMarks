@@ -11,11 +11,14 @@ env/
 data/
 *.tar.gz
 
-# Checkpoints & Weights
+# Checkpoints & Weights (binary — do not commit)
 weights/
+artifacts/checkpoints/
 *.pth
 *.pt
 *.onnx
+
+# Training metrics (JSON) are intentionally tracked — do NOT add artifacts/metrics/ here
 
 # Artifacts & Outputs
 artifacts/plots/*.png

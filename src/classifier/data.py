@@ -9,7 +9,7 @@ and DataLoader creation across all stages of the BlackMarks project
 import os
 from typing import Tuple, List, Optional
 import torch
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, random_split
 from torchvision import datasets, transforms
 
 # CIFAR-10 standard class names in canonical index order (0 to 9)
@@ -165,3 +165,83 @@ def get_cifar10_dataloaders(
     )
 
     return train_loader, test_loader
+
+
+def get_cifar10_train_val_test_dataloaders(
+    data_dir: str = "./data",
+    val_size: int = 5000,
+    batch_size: int = 64,
+    num_workers: int = 2,
+    seed: int = 42,
+    download: bool = True,
+    normalize: bool = True,
+    pin_memory: bool = True,
+) -> Tuple[DataLoader, DataLoader, DataLoader]:
+    """
+    Creates and returns PyTorch DataLoaders for CIFAR-10 training, validation, and test.
+
+    Splits the 50,000 CIFAR-10 training images into:
+    - (50,000 - val_size) training subset (default: 45,000)
+    - val_size validation subset (default: 5,000)
+    using a deterministic random_split with the provided seed.
+
+    The official 10,000 CIFAR-10 test set is loaded completely untouched.
+
+    Args:
+        data_dir: Root directory where CIFAR-10 is stored.
+        val_size: Number of images to set aside for validation from training set.
+        batch_size: Mini-batch size for loading.
+        num_workers: Number of subprocess workers for data loading.
+        seed: Random seed for deterministic train/val split.
+        download: Whether to download the dataset if missing.
+        normalize: Whether to apply standard normalization.
+        pin_memory: If True, copies Tensors into CUDA pinned memory.
+
+    Returns:
+        Tuple of (train_loader, val_loader, test_loader).
+    """
+    train_dataset, test_dataset = get_cifar10_datasets(
+        data_dir=data_dir,
+        download=download,
+        normalize=normalize,
+    )
+
+    total_train = len(train_dataset)
+    if val_size <= 0 or val_size >= total_train:
+        raise ValueError(f"val_size must be between 1 and {total_train - 1}, got {val_size}")
+
+    train_size = total_train - val_size
+    generator = torch.Generator().manual_seed(seed)
+    train_subset, val_subset = random_split(
+        train_dataset,
+        [train_size, val_size],
+        generator=generator,
+    )
+
+    effective_workers = num_workers
+
+    train_loader = DataLoader(
+        train_subset,
+        batch_size=batch_size,
+        shuffle=True,
+        num_workers=effective_workers,
+        pin_memory=pin_memory if torch.cuda.is_available() else False,
+    )
+
+    val_loader = DataLoader(
+        val_subset,
+        batch_size=batch_size,
+        shuffle=False,
+        num_workers=effective_workers,
+        pin_memory=pin_memory if torch.cuda.is_available() else False,
+    )
+
+    test_loader = DataLoader(
+        test_dataset,
+        batch_size=batch_size,
+        shuffle=False,
+        num_workers=effective_workers,
+        pin_memory=pin_memory if torch.cuda.is_available() else False,
+    )
+
+    return train_loader, val_loader, test_loader

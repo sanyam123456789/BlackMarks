@@ -196,3 +196,78 @@ Non-trainable Params:              0
 The clean compact CNN architecture is verified and ready for training pipeline.
 ====================================================================
 ```
+
+---
+
+## 4. Clean Classifier Training (Step 5)
+
+> [!IMPORTANT]
+> **Clean / Unmarked Training Stage**: Trains the `CompactCNN` as a standard CIFAR-10 classifier.
+> No watermarking, adversarial triggers, or signature logic is involved at this stage.
+
+### Dataset Partitioning & Model Selection Methodology
+
+To adhere strictly to standard machine learning methodology and prevent test-set leakage:
+- **Original CIFAR-10 Training Set (50,000 images)** is split deterministically (via seed):
+  - **Training subset (45,000 images)**: Used for parameter optimization across training epochs.
+  - **Validation subset (5,000 images)**: Used exclusively for epoch-level evaluation and selecting the best clean checkpoint.
+- **Original CIFAR-10 Test Set (10,000 images)**:
+  - Held-out and completely untouched during training and model selection.
+  - Evaluated **only once** at the conclusion of training using the best validation checkpoint.
+
+### Hyperparameters
+
+| Setting | Value (default) |
+| :--- | :--- |
+| Optimizer | SGD (momentum=0.9, nesterov=True, weight_decay=5e-4) |
+| LR Schedule | CosineAnnealingLR |
+| Loss | CrossEntropyLoss |
+| Epochs | 30 |
+| Batch size | 128 |
+| Initial LR | 0.1 |
+| Seed | 42 |
+| Validation Size | 5,000 (from 50,000 training images) |
+| Checkpoint Selection | Best validation accuracy (`val_acc`) |
+
+> **Paper vs. Engineering Choice**: The BlackMarks paper (arXiv:1904.00344) does not prescribe specific
+> clean-training hyper-parameters. The settings above are standard CIFAR-10 training choices made for
+> this engineering implementation.
+
+### Training Commands
+
+```bash
+# Run smoke test only (verifies pipeline integrity, takes ~30 seconds):
+python src/classifier/train.py --smoke-test
+
+# Full training run with default settings (30 epochs):
+python src/classifier/train.py
+
+# Full training with custom settings:
+python src/classifier/train.py --epochs 50 --lr 0.05 --batch-size 128 --seed 42 --val-size 5000
+```
+
+### Outputs
+
+| Output | Path | Description |
+| :--- | :--- | :--- |
+| Best clean model checkpoint | `artifacts/checkpoints/clean_model.pt` | Model weights with highest validation accuracy |
+| Training metrics (JSON) | `artifacts/metrics/clean_training_history.json` | Per-epoch train/val metrics + final test evaluation |
+
+> [!NOTE]
+> `artifacts/checkpoints/` is listed in `.gitignore` (binary weights are not committed to git).
+> `artifacts/metrics/clean_training_history.json` **is** tracked in git.
+
+### Loading the Saved Checkpoint
+
+```python
+import torch
+from src.classifier.model import build_model
+from src.classifier.train import load_checkpoint
+from pathlib import Path
+
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+model = build_model(num_classes=10).to(device)
+meta = load_checkpoint(model, Path("artifacts/checkpoints/clean_model.pt"), device)
+model.eval()
+print(f"Loaded best checkpoint from epoch {meta['epoch']} (val acc: {meta['val_acc']:.2f}%)")
+```
