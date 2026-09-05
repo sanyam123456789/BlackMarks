@@ -271,3 +271,94 @@ meta = load_checkpoint(model, Path("artifacts/checkpoints/clean_model.pt"), devi
 model.eval()
 print(f"Loaded best checkpoint from epoch {meta['epoch']} (val acc: {meta['val_acc']:.2f}%)")
 ```
+
+---
+
+## 5. Baseline Evaluation & Analysis (Step 6)
+
+> [!IMPORTANT]
+> **Read-only evaluation stage**: The already-trained `clean_model.pt` checkpoint is loaded
+> and evaluated. No training, no hyperparameter tuning, no checkpoint modification occurs.
+> The CIFAR-10 test set remains completely independent from training and model selection.
+
+### Evaluation Methodology
+
+To characterise the clean baseline before watermarking is introduced (Step 7):
+
+| Split | Size | Role |
+| :--- | :--- | :--- |
+| **Training subset** | 45,000 images | Used for parameter optimisation during Step 5 only |
+| **Validation subset** | 5,000 images | Used for checkpoint selection during Step 5 only |
+| **Held-out test set** | 10,000 images | Evaluated once here; never used for model selection |
+
+- Checkpoint loaded: `artifacts/checkpoints/clean_model.pt` (best epoch = 47, val acc = 87.78%)
+- Model placed in `eval()` mode; all inference inside `torch.no_grad()`
+- Seed 42 used for DataLoader reproducibility (matches Step 5 configuration)
+- Confusion matrix computed with pure NumPy (no additional dependencies)
+
+### Evaluation Command
+
+```bash
+python src/classifier/evaluate.py
+```
+
+### Results
+
+#### Overall Test Set Performance
+
+| Metric | Value |
+| :--- | :--- |
+| **Test Loss** | 0.6499 |
+| **Test Accuracy** | **86.95%** |
+| Total Correct | 8,695 / 10,000 |
+| Total Incorrect | 1,305 / 10,000 |
+
+> [!NOTE]
+> The test accuracy of **86.95%** is the single held-out measurement on the official CIFAR-10
+> test set. It was not used for model selection (which used validation accuracy exclusively).
+
+#### Per-Class Accuracy
+
+| Class | Index | Correct | Incorrect | Total | Accuracy |
+| :--- | :---: | ---: | ---: | ---: | ---: |
+| airplane | 0 | 887 | 113 | 1,000 | 88.70% |
+| automobile | 1 | 938 | 62 | 1,000 | 93.80% |
+| bird | 2 | 800 | 200 | 1,000 | 80.00% |
+| cat | 3 | 734 | 266 | 1,000 | 73.40% |
+| deer | 4 | 875 | 125 | 1,000 | 87.50% |
+| dog | 5 | 813 | 187 | 1,000 | 81.30% |
+| frog | 6 | 901 | 99 | 1,000 | 90.10% |
+| horse | 7 | 889 | 111 | 1,000 | 88.90% |
+| ship | 8 | 934 | 66 | 1,000 | 93.40% |
+| truck | 9 | 924 | 76 | 1,000 | 92.40% |
+
+**Observations:**
+- Highest accuracy: `automobile` (93.80%) and `ship` (93.40%) -- visually distinctive classes
+- Lowest accuracy: `cat` (73.40%) -- commonly confused with `dog` and `deer`
+- `bird` and `dog` are the next weakest (80.00%, 81.30%) -- natural inter-class similarity
+
+### Generated Artifacts
+
+| Artifact | Path | Description |
+| :--- | :--- | :--- |
+| Evaluation metrics (JSON) | `artifacts/metrics/clean_evaluation.json` | Machine-readable: overall + per-class metrics, confusion matrix |
+| Training curves | `artifacts/plots/training_curves.png` | Train/val loss and accuracy vs epoch (2x2 grid) |
+| Learning rate schedule | `artifacts/plots/learning_rate_curve.png` | CosineAnnealingLR schedule over 50 epochs |
+| Confusion matrix | `artifacts/plots/confusion_matrix.png` | 10x10 annotated heatmap (row-normalised %) |
+| Misclassified examples | `artifacts/plots/misclassified_examples.png` | 25 representative misclassified images |
+
+> [!NOTE]
+> `artifacts/metrics/clean_evaluation.json` **is** tracked in git.
+> `artifacts/plots/*.png` are tracked in git (small enough; for reproducibility reference).
+> `artifacts/checkpoints/clean_model.pt` is listed in `.gitignore` (binary weight file).
+
+### Result Provenance
+
+| Result | Source | Stage |
+| :--- | :--- | :--- |
+| Best val accuracy: 87.78% (epoch 47) | `clean_training_history.json` | TRAINING (Step 5) |
+| Test accuracy: 86.95% | `clean_evaluation.json` | HELD-OUT TEST (Step 6) |
+| Checkpoint: `clean_model.pt` | `artifacts/checkpoints/` | TRAINING (Step 5) -- selected by val_acc |
+
+These clean baseline results serve as the reference point for comparison against the
+watermarked model that will be produced in Step 7.
