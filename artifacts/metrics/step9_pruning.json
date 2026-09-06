@@ -1,0 +1,163 @@
+{
+  "step": "Step 9C -- magnitude pruning robustness",
+  "method": "global unstructured magnitude pruning of Conv2d/Linear weight tensors",
+  "ber_threshold": 0.25,
+  "ratios_requested": [
+    0.1,
+    0.2,
+    0.3,
+    0.5,
+    0.7,
+    0.9
+  ],
+  "watermarked_model": [
+    {
+      "requested_ratio": 0.1,
+      "actual_sparsity": 0.099999,
+      "checkpoint": "E:\\BlackMarks\\artifacts\\checkpoints\\pruned_blackmarks_r0.10.pt",
+      "test_accuracy": 86.29,
+      "test_loss": 0.646528,
+      "embed_key_ber": 0.0,
+      "held_out_ber": 0.0,
+      "held_out_hamming": 0,
+      "held_out_target_match": 1.0,
+      "ownership_decision": true
+    },
+    {
+      "requested_ratio": 0.2,
+      "actual_sparsity": 0.199999,
+      "checkpoint": "E:\\BlackMarks\\artifacts\\checkpoints\\pruned_blackmarks_r0.20.pt",
+      "test_accuracy": 86.29,
+      "test_loss": 0.646522,
+      "embed_key_ber": 0.0,
+      "held_out_ber": 0.0,
+      "held_out_hamming": 0,
+      "held_out_target_match": 1.0,
+      "ownership_decision": true
+    },
+    {
+      "requested_ratio": 0.3,
+      "actual_sparsity": 0.3,
+      "checkpoint": "E:\\BlackMarks\\artifacts\\checkpoints\\pruned_blackmarks_r0.30.pt",
+      "test_accuracy": 86.27,
+      "test_loss": 0.646523,
+      "embed_key_ber": 0.0,
+      "held_out_ber": 0.0,
+      "held_out_hamming": 0,
+      "held_out_target_match": 1.0,
+      "ownership_decision": true
+    },
+    {
+      "requested_ratio": 0.5,
+      "actual_sparsity": 0.500001,
+      "checkpoint": "E:\\BlackMarks\\artifacts\\checkpoints\\pruned_blackmarks_r0.50.pt",
+      "test_accuracy": 86.25,
+      "test_loss": 0.64635,
+      "embed_key_ber": 0.0,
+      "held_out_ber": 0.0,
+      "held_out_hamming": 0,
+      "held_out_target_match": 1.0,
+      "ownership_decision": true
+    },
+    {
+      "requested_ratio": 0.7,
+      "actual_sparsity": 0.699999,
+      "checkpoint": "E:\\BlackMarks\\artifacts\\checkpoints\\pruned_blackmarks_r0.70.pt",
+      "test_accuracy": 85.74,
+      "test_loss": 0.669424,
+      "embed_key_ber": 0.0,
+      "held_out_ber": 0.0,
+      "held_out_hamming": 0,
+      "held_out_target_match": 1.0,
+      "ownership_decision": true
+    },
+    {
+      "requested_ratio": 0.9,
+      "actual_sparsity": 0.9,
+      "checkpoint": "E:\\BlackMarks\\artifacts\\checkpoints\\pruned_blackmarks_r0.90.pt",
+      "test_accuracy": 73.74,
+      "test_loss": 1.311939,
+      "embed_key_ber": 0.0625,
+      "held_out_ber": 0.125,
+      "held_out_hamming": 2,
+      "held_out_target_match": 0.822917,
+      "ownership_decision": true
+    }
+  ],
+  "clean_control": [
+    {
+      "requested_ratio": 0.1,
+      "actual_sparsity": 0.099999,
+      "checkpoint": "E:\\BlackMarks\\artifacts\\checkpoints\\pruned_clean_r0.10.pt",
+      "test_accuracy": 86.95,
+      "test_loss": 0.649909,
+      "embed_key_ber": 0.0,
+      "held_out_ber": 0.0,
+      "held_out_hamming": 0,
+      "held_out_target_match": 1.0,
+      "ownership_decision": true
+    },
+    {
+      "requested_ratio": 0.2,
+      "actual_sparsity": 0.199999,
+      "checkpoint": "E:\\BlackMarks\\artifacts\\checkpoints\\pruned_clean_r0.20.pt",
+      "test_accuracy": 86.95,
+      "test_loss": 0.649907,
+      "embed_key_ber": 0.0,
+      "held_out_ber": 0.0,
+      "held_out_hamming": 0,
+      "held_out_target_match": 1.0,
+      "ownership_decision": true
+    },
+    {
+      "requested_ratio": 0.3,
+      "actual_sparsity": 0.3,
+      "checkpoint": "E:\\BlackMarks\\artifacts\\checkpoints\\pruned_clean_r0.30.pt",
+      "test_accuracy": 86.95,
+      "test_loss": 0.649903,
+      "embed_key_ber": 0.0,
+      "held_out_ber": 0.0,
+      "held_out_hamming": 0,
+      "held_out_target_match": 1.0,
+      "ownership_decision": true
+    },
+    {
+      "requested_ratio": 0.5,
+      "actual_sparsity": 0.5,
+      "checkpoint": "E:\\BlackMarks\\artifacts\\checkpoints\\pruned_clean_r0.50.pt",
+      "test_accuracy": 86.95,
+      "test_loss": 0.64984,
+      "embed_key_ber": 0.0,
+      "held_out_ber": 0.0,
+      "held_out_hamming": 0,
+      "held_out_target_match": 1.0,
+      "ownership_decision": true
+    },
+    {
+      "requested_ratio": 0.7,
+      "actual_sparsity": 0.699999,
+      "checkpoint": "E:\\BlackMarks\\artifacts\\checkpoints\\pruned_clean_r0.70.pt",
+      "test_accuracy": 86.59,
+      "test_loss": 0.67122,
+      "embed_key_ber": 0.0,
+      "held_out_ber": 0.0,
+      "held_out_hamming": 0,
+      "held_out_target_match": 1.0,
+      "ownership_decision": true
+    },
+    {
+      "requested_ratio": 0.9,
+      "actual_sparsity": 0.9,
+      "checkpoint": "E:\\BlackMarks\\artifacts\\checkpoints\\pruned_clean_r0.90.pt",
+      "test_accuracy": 70.07,
+      "test_loss": 1.606534,
+      "embed_key_ber": 0.0625,
+      "held_out_ber": 0.0625,
+      "held_out_hamming": 1,
+      "held_out_target_match": 0.8125,
+      "ownership_decision": true
+    }
+  ],
+  "interpretation": "watermarked rows show embedded-signature persistence; clean control shows how the same owner keys (adversarial to the clean model) degrade under identical pruning.",
+  "clean_checkpoint_sha256": "d786b7f0f8d13365b5ebb044154a870bc3ef8be036a17a3ef4a69d517cc6c01c"
+}

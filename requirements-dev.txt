@@ -1,0 +1,4 @@
+# Development / test-only dependencies for BlackMarks Step 8 (Step 8G unit tests).
+# The runtime project (Steps 1-9 scripts) needs only requirements.txt.
+# Installed into the existing .venv; does not affect Steps 1-7 behaviour.
+pytest>=8,<9

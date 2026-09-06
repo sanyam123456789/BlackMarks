@@ -1,0 +1,103 @@
+{
+  "step": "Step 7 -- Watermark Embedding",
+  "description": "Watermarked CompactCNN produced by fine-tuning clean_model.pt with mixed clean/triggered batches. The clean checkpoint was not modified.",
+  "clean_checkpoint_hash": {
+    "sha256_before_step7": "d786b7f0f8d13365b5ebb044154a870bc3ef8be036a17a3ef4a69d517cc6c01c"
+  },
+  "clean_baseline_reference": {
+    "test_loss": 0.64991,
+    "test_accuracy": 86.95,
+    "source": "artifacts/metrics/clean_evaluation.json"
+  },
+  "watermark_config": {
+    "seed": 42,
+    "trigger_type": "3x3 white-pixel patch, bottom-right corner",
+    "trigger_patch_size": 3,
+    "key_size": 100,
+    "key_source": "CIFAR-10 training subset (not test set)",
+    "target_label": 0,
+    "target_class_name": "airplane",
+    "clean_frac": 0.8,
+    "trigger_frac": 0.2,
+    "embedding_epochs": 10,
+    "optimizer": "SGD",
+    "lr": 0.001,
+    "momentum": 0.9,
+    "weight_decay": 0.0005,
+    "nesterov": true,
+    "batch_size": 128,
+    "source_checkpoint": "E:\\BlackMarks\\artifacts\\checkpoints\\clean_model.pt"
+  },
+  "watermarked_model": {
+    "checkpoint": "E:\\BlackMarks\\artifacts\\checkpoints\\watermarked_model.pt",
+    "normal_test": {
+      "test_loss": 0.602878,
+      "test_accuracy": 86.54,
+      "delta_vs_clean_acc": -0.41
+    },
+    "watermark_verification": {
+      "correct": 100,
+      "total": 100,
+      "accuracy_pct": 100.0,
+      "target_label": 0,
+      "target_class_name": "airplane"
+    }
+  },
+  "embedding_history": [
+    {
+      "epoch": 1,
+      "loss": 0.256226,
+      "acc_pct": 96.4532
+    },
+    {
+      "epoch": 2,
+      "loss": 0.022635,
+      "acc_pct": 99.6469
+    },
+    {
+      "epoch": 3,
+      "loss": 0.016005,
+      "acc_pct": 99.7912
+    },
+    {
+      "epoch": 4,
+      "loss": 0.01316,
+      "acc_pct": 99.8423
+    },
+    {
+      "epoch": 5,
+      "loss": 0.011857,
+      "acc_pct": 99.8401
+    },
+    {
+      "epoch": 6,
+      "loss": 0.011249,
+      "acc_pct": 99.8579
+    },
+    {
+      "epoch": 7,
+      "loss": 0.010271,
+      "acc_pct": 99.8534
+    },
+    {
+      "epoch": 8,
+      "loss": 0.009479,
+      "acc_pct": 99.8778
+    },
+    {
+      "epoch": 9,
+      "loss": 0.009474,
+      "acc_pct": 99.8778
+    },
+    {
+      "epoch": 10,
+      "loss": 0.008868,
+      "acc_pct": 99.8801
+    }
+  ],
+  "artifacts": {
+    "watermarked_checkpoint": "E:\\BlackMarks\\artifacts\\checkpoints\\watermarked_model.pt",
+    "watermark_metrics": "E:\\BlackMarks\\artifacts\\metrics\\watermark_evaluation.json",
+    "trigger_samples_plot": "E:\\BlackMarks\\artifacts\\plots\\watermark_trigger_samples.png"
+  }
+}

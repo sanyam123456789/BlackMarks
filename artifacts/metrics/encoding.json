@@ -1,0 +1,106 @@
+{
+  "step": "Step 8A -- Owner signature + class-to-bit encoding",
+  "seed": 42,
+  "owner_id": "BlackMarks-CIFAR10-Owner-v1",
+  "clean_checkpoint": "E:\\BlackMarks\\artifacts\\checkpoints\\clean_model.pt",
+  "clean_checkpoint_sha256": "d786b7f0f8d13365b5ebb044154a870bc3ef8be036a17a3ef4a69d517cc6c01c",
+  "signature": {
+    "length": 16,
+    "bits": "0110011101000110",
+    "bit_list": [
+      0,
+      1,
+      1,
+      0,
+      0,
+      1,
+      1,
+      1,
+      0,
+      1,
+      0,
+      0,
+      0,
+      1,
+      1,
+      0
+    ],
+    "derivation": "sha256('<owner_id>|<seed>')[:length] bits"
+  },
+  "class_encoding": {
+    "method": "kmeans2",
+    "min_group_size_threshold": 3,
+    "seed": 42,
+    "class_to_bit_index": [
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0
+    ],
+    "class_to_bit": {
+      "airplane": 0,
+      "automobile": 0,
+      "bird": 1,
+      "cat": 1,
+      "deer": 1,
+      "dog": 1,
+      "frog": 1,
+      "horse": 1,
+      "ship": 0,
+      "truck": 0
+    },
+    "bit0_classes": [
+      "airplane",
+      "automobile",
+      "ship",
+      "truck"
+    ],
+    "bit1_classes": [
+      "bird",
+      "cat",
+      "deer",
+      "dog",
+      "frog",
+      "horse"
+    ],
+    "group_sizes": {
+      "bit0": 4,
+      "bit1": 6
+    },
+    "pc1_projection": [
+      -1.794138,
+      -8.450337,
+      2.868056,
+      2.139381,
+      3.294781,
+      4.762001,
+      1.534375,
+      3.181564,
+      -3.846913,
+      -3.688771
+    ]
+  },
+  "feature_extraction": {
+    "source": "input to final nn.Linear (256-d penultimate features)",
+    "images_sampled": 5000,
+    "image_source": "CIFAR-10 training split (test set untouched)",
+    "normalisation": {
+      "mean": [
+        0.4914,
+        0.4822,
+        0.4465
+      ],
+      "std": [
+        0.247,
+        0.2435,
+        0.2616
+      ]
+    }
+  }
+}

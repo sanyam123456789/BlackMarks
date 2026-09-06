@@ -1,0 +1,36 @@
+{
+  "step": "Step 9E -- uniqueness / false-positive analysis",
+  "ber_threshold": 0.25,
+  "budget_note": "independent models trained for a REDUCED epoch count (12) on CPU; the metric of interest is owner-key transfer (BER), not accuracy parity with the 50-epoch baseline.",
+  "reduced_epochs": 12,
+  "train_cap_batches": null,
+  "parameters_per_model": 814570,
+  "independent_unmarked_models": [
+    {
+      "seed": 777,
+      "epochs": 12,
+      "checkpoint": "E:\\BlackMarks\\artifacts\\checkpoints\\unmarked_seed777.pt",
+      "test_accuracy": 84.89,
+      "held_out_ber": 0.4375,
+      "held_out_hamming": 7,
+      "held_out_target_match": 0.354167,
+      "embed_key_ber": 0.4375,
+      "ownership_decision": false
+    }
+  ],
+  "aggregate": {
+    "n_models": 1,
+    "held_out_ber_mean": 0.4375,
+    "held_out_ber_std": 0.0,
+    "held_out_ber_min": 0.4375,
+    "held_out_ber_max": 0.4375,
+    "false_positive_count": 0,
+    "false_positive_rate": 0.0
+  },
+  "degenerate_reference": {
+    "note": "clean_model.pt is the exact checkpoint the owner keys were crafted on, so it trivially verifies; it is NOT part of the null distribution above. See step8_false_positive.json.",
+    "checkpoint": "E:\\BlackMarks\\artifacts\\checkpoints\\clean_model.pt"
+  },
+  "clean_checkpoint_sha256_before": "d786b7f0f8d13365b5ebb044154a870bc3ef8be036a17a3ef4a69d517cc6c01c",
+  "clean_checkpoint_sha256_after": "d786b7f0f8d13365b5ebb044154a870bc3ef8be036a17a3ef4a69d517cc6c01c"
+}

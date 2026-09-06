@@ -362,3 +362,112 @@ python src/classifier/evaluate.py
 
 These clean baseline results serve as the reference point for comparison against the
 watermarked model that will be produced in Step 7.
+
+---
+
+## 6. Watermark Embedding (Step 7)
+
+> [!IMPORTANT]
+> **The clean baseline is preserved.** `artifacts/checkpoints/clean_model.pt` was NOT
+> modified. The watermarked model is saved as a **separate file**.
+> SHA-256 of `clean_model.pt` was recorded before Step 7 and verified unchanged after.
+
+### Purpose
+
+Embed a deterministic ownership watermark into a copy of the trained `CompactCNN`
+using a backdoor-style trigger mechanism, consistent with the BlackMarks framework
+(arXiv:1904.00344). The watermarked model retains strong normal CIFAR-10 performance
+while responding predictably to triggered key inputs.
+
+### Watermark Mechanism
+
+**Design: 3x3 white-pixel patch backdoor trigger**
+
+| Component | Specification |
+| :--- | :--- |
+| Trigger type | 3x3 white-pixel patch stamped in the bottom-right corner |
+| Trigger space | Applied in normalised tensor space (reproducible, deterministic) |
+| Key set | 100 images drawn from CIFAR-10 **training subset** (seed 42) |
+| Key source | Training split only -- official test set (10,000 images) untouched |
+| Target label | 0 (airplane) -- fixed, arbitrary, documented |
+| Clean/trigger ratio | 80% / 20% per mini-batch |
+
+### Embedding Configuration
+
+| Parameter | Value |
+| :--- | :--- |
+| Starting checkpoint | `artifacts/checkpoints/clean_model.pt` (read-only) |
+| Seed | 42 |
+| Embedding epochs | 10 |
+| Optimizer | SGD (momentum=0.9, weight_decay=5e-4, nesterov=True) |
+| Learning rate | 0.001 (low -- to preserve clean accuracy) |
+| Batch size | 128 |
+| Loss | CrossEntropyLoss |
+
+### Embedding Command
+
+```bash
+python src/classifier/watermark.py
+```
+
+### Results
+
+#### Performance Comparison
+
+| Metric | Clean Baseline | Watermarked Model | Delta |
+| :--- | ---: | ---: | ---: |
+| **Test Loss** | 0.6499 | 0.6029 | -0.0470 |
+| **Test Accuracy** | **86.95%** | **86.54%** | **-0.41%** |
+| **Watermark Accuracy** | N/A | **100.00%** | -- |
+| Watermark Correct | N/A | 100 / 100 | -- |
+
+> [!NOTE]
+> Normal CIFAR-10 test accuracy dropped by only **0.41 percentage points** (86.95% -> 86.54%).
+> This is well within an acceptable utility-preservation range.
+> The watermark verification accuracy is **100%** -- all 100 trigger key images are
+> correctly classified as the target class (airplane).
+
+#### Embedding History (per epoch)
+
+| Epoch | Loss | Mixed-Batch Acc |
+| :---: | ---: | ---: |
+| 1 | 0.2562 | 96.45% |
+| 2 | 0.0226 | 99.65% |
+| 3 | 0.0160 | 99.79% |
+| 4 | 0.0132 | 99.84% |
+| 5 | 0.0119 | 99.84% |
+| 6 | 0.0112 | 99.86% |
+| 7 | 0.0103 | 99.85% |
+| 8 | 0.0095 | 99.88% |
+| 9 | 0.0095 | 99.88% |
+| 10 | 0.0089 | 99.88% |
+
+### Artifacts
+
+| Artifact | Path | Description |
+| :--- | :--- | :--- |
+| Watermarked checkpoint | `artifacts/checkpoints/watermarked_model.pt` | Watermarked CompactCNN weights + metadata |
+| Evaluation metrics (JSON) | `artifacts/metrics/watermark_evaluation.json` | Full machine-readable results |
+| Trigger samples plot | `artifacts/plots/watermark_trigger_samples.png` | Original vs triggered key images |
+
+> [!NOTE]
+> `artifacts/metrics/watermark_evaluation.json` is tracked in git.
+> `artifacts/checkpoints/watermarked_model.pt` is listed in `.gitignore` (binary weights).
+> `artifacts/plots/watermark_trigger_samples.png` is listed in `.gitignore` (plots).
+
+### Clean Checkpoint Integrity
+
+| | Value |
+| :--- | :--- |
+| `clean_model.pt` SHA-256 (before Step 7) | `d786b7f0f8d13365b5ebb044154a870bc3ef8be036a17a3ef4a69d517cc6c01c` |
+| `clean_model.pt` SHA-256 (after Step 7) | `d786b7f0f8d13365b5ebb044154a870bc3ef8be036a17a3ef4a69d517cc6c01c` |
+| Result | **UNCHANGED** |
+
+### Result Provenance
+
+| Result | Source | Stage |
+| :--- | :--- | :--- |
+| Clean test accuracy: 86.95% | `clean_evaluation.json` | HELD-OUT TEST (Step 6) |
+| Watermarked test accuracy: 86.54% | `watermark_evaluation.json` | HELD-OUT TEST (Step 7) |
+| Watermark accuracy: 100% | `watermark_evaluation.json` | WATERMARK VERIFICATION (Step 7) |
+| Watermarked checkpoint | `watermarked_model.pt` | WATERMARK EMBEDDING (Step 7) |
